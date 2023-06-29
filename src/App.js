@@ -2,50 +2,54 @@ import { useState } from "react";
 
 function App() {
 
-  const [counter, setCounter] = useState(0);
+  const [counter, setCounter] = useState({ min: 1, sec: 2 });
   const [clear, setClear] = useState();
   const [flag, setFlag] = useState(false);
   const [reverseCounter, Setreverse] = useState();
   const [reverseFlag, setReversFlag] = useState(false);
 
-  if (counter === 0) {
+  if(counter.sec === 0 && counter.min === 0){
     clearInterval(reverseCounter);
   }
 
   const start = () => {
     setClear(
       setInterval(() => {
-        setCounter((prevCounter) => prevCounter + 1)
-      },1000)
+        setCounter((prevCounter) => ({
+          min: prevCounter.sec === 59 ? (prevCounter.min + 1) : prevCounter.min ,
+          sec: prevCounter.sec === 59 ? counter.sec = 0 : prevCounter.sec + 1
+        }));
+      }, 1000)
     );
     setFlag(true);
-    setReversFlag(false)
-
+    setReversFlag(false);
   }
 
-
   const reverse = () => {
-    setReversFlag(true)
-    clearInterval(clear)
-    setFlag(true)
+    clearInterval(clear);
+    setReversFlag(true);
+    setFlag(true);
     Setreverse(
       setInterval(() => {
-        setCounter((prevCounter) => prevCounter - 1)
+        setCounter((prevCounter) => ({
+          min: prevCounter.sec === 60 ? (prevCounter.min - 1) : prevCounter.min,
+          sec: prevCounter.sec === 0 ? prevCounter.sec = 60 : prevCounter.sec -1,
+        }))
       }, 1000)
-    )
+    );
   }
 
   const pause = () => {
     clearInterval(clear);
     clearInterval(reverseCounter);
     setFlag(false);
-    setReversFlag(false)
+    setReversFlag(false);
   }
 
   const reset = () => {
     clearInterval(clear);
     clearInterval(reverseCounter);
-    setCounter(0);
+    setCounter({ min: 0, sec: 0 });
     setFlag(false);
   }
 
@@ -53,12 +57,12 @@ function App() {
     <div className="container mt-2">
       <div className="d-flex align-items-center justify-content-center flex-column">
         <h1>Engross</h1>
-        <h3 className="mt-4">Counter : {counter}</h3>
+        <h3 className="mt-4">{counter.min === 0 ? "00" : counter.min < 10 ? `0${counter.min}` : counter.min} : {counter.sec === 0 ? "00" : counter.sec < 10 ? `0${counter.sec}` : counter.sec}</h3>
         <div className="mt-4">
-          <button className={`btn btn-success me-2 ${(flag && counter!== 0) ? 'disabled' : ''}`} onClick={start}>Start</button>
-          <button className={`btn btn-dark me-2 ${(counter === 0 || reverseFlag)  ? 'disabled' : ''}`} onClick={reverse}>Reverse</button>
-          <button className={`btn btn-danger me-2 ${counter === 0 && 'disabled'}`} onClick={pause}>Pause</button>
-          <button className={`btn btn-warning ${counter === 0 && 'disabled'}`} onClick={reset}>Reset</button>
+          <button className={`btn btn-success me-2 ${(flag && counter.min !== 0) ? 'disabled' : ''}`} onClick={start}>Start</button>
+          <button className={`btn btn-dark me-2 ${(counter.sec === 0 || reverseFlag) ? 'disabled' : ''}`} onClick={reverse}>Reverse</button>
+          <button className={`btn btn-danger me-2 ${counter.sec === 0 && 'disabled'}`} onClick={pause}>Pause</button>
+          <button className={`btn btn-warning ${counter.sec === 0 && 'disabled'}`} onClick={reset}>Reset</button>
         </div>
       </div>
     </div>
