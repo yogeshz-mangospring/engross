@@ -1,16 +1,32 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import "./App.css"
 
-function App() {
+
+const App = (props) => {
 
   const [counter, setCounter] = useState({ min: 0, sec: 0 });
   const [clear, setClear] = useState();
   const [flag, setFlag] = useState(false);
   const [reverseCounter, Setreverse] = useState();
   const [reverseFlag, setReversFlag] = useState(false);
+  const [theme, setTheme] = useState(
+    localStorage.getItem('themeMode') === 'dark' ? 'dark' : 'light'
+  );
+
+
+  useEffect(() => {
+    localStorage.setItem('themeMode', theme)
+  },[theme])
 
   if (counter.sec === 0 && counter.min === 0) {
     clearInterval(reverseCounter);
   }
+
+  const switchMode = () => {
+    theme === 'light' ? setTheme('dark') : setTheme('light')
+  }
+
+  
 
   const start = () => {
     setClear(
@@ -54,9 +70,10 @@ function App() {
   }
 
   return (
-    <div className="container mt-2">
+    <div className={`container-root ${theme}`}>
       <div className="d-flex align-items-center justify-content-center flex-column">
         <h1>Engross</h1>
+        <button type="button" className="btn btn-primary" onClick={switchMode}>Switch color Theme</button>
         <h3 className="mt-4">{counter.min === 0 ? "00" : counter.min < 10 ? `0${counter.min}` : counter.min} : {counter.sec === 0 ? "00" : counter.sec < 10 ? `0${counter.sec}` : counter.sec}</h3>
         <div className="mt-4">
           <button className={`btn btn-success me-2 ${(flag && (counter.min !== 0 || counter.sec !== 0)) ? 'disabled' : ''}`} onClick={start}>Start</button>
