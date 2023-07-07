@@ -12,3 +12,7 @@
     padding: 5px;
     height: 100vh;
 }
+
+.form-check-input:checked{
+  background-color: black;
+}
