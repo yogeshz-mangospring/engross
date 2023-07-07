@@ -9,24 +9,34 @@ const App = (props) => {
   const [flag, setFlag] = useState(false);
   const [reverseCounter, Setreverse] = useState();
   const [reverseFlag, setReversFlag] = useState(false);
+  const [checkedToggle, setToggle] = useState(
+    localStorage.getItem('themeMode') === 'dark' ? true : false
+  );
   const [theme, setTheme] = useState(
     localStorage.getItem('themeMode') === 'dark' ? 'dark' : 'light'
   );
-
+  
 
   useEffect(() => {
     localStorage.setItem('themeMode', theme)
-  },[theme])
+  }, [theme, checkedToggle])
+
 
   if (counter.sec === 0 && counter.min === 0) {
     clearInterval(reverseCounter);
   }
 
   const switchMode = () => {
-    theme === 'light' ? setTheme('dark') : setTheme('light')
+    if (theme === 'light') {
+      setTheme('dark');
+      setToggle(true);
+    }
+    else {
+      setTheme('light');
+      setToggle(false);
+    }
   }
 
-  
 
   const start = () => {
     setClear(
@@ -73,7 +83,16 @@ const App = (props) => {
     <div className={`container-root ${theme}`}>
       <div className="d-flex align-items-center justify-content-center flex-column">
         <h1>Engross</h1>
-        <button type="button" className="btn btn-primary" onClick={switchMode}>Switch color Theme</button>
+        {/* <button type="button" className="btn btn-primary" onClick={switchMode}>Switch color Theme</button> */}
+
+        <div className="d-flex">
+          <span className="me-2">Light</span>
+          <div className="form-check form-switch">
+            <input type="checkbox" className="form-check-input" onChange={switchMode} checked={checkedToggle}/>
+          </div>
+          <span>Dark</span>
+        </div>
+
         <h3 className="mt-4">{counter.min === 0 ? "00" : counter.min < 10 ? `0${counter.min}` : counter.min} : {counter.sec === 0 ? "00" : counter.sec < 10 ? `0${counter.sec}` : counter.sec}</h3>
         <div className="mt-4">
           <button className={`btn btn-success me-2 ${(flag && (counter.min !== 0 || counter.sec !== 0)) ? 'disabled' : ''}`} onClick={start}>Start</button>
